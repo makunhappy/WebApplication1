@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1.X509.Qualified;
+using WebApplication1.ConfigModels;
 using WebApplication1.Filters;
 
 namespace WebApplication1
@@ -27,9 +29,15 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(opt => opt.Filters.Add<DemoFilter>());
+            services.AddControllers(opt =>
+            {
+                opt.Filters.Add<DemoFilter>(int.MinValue);
+                opt.Filters.Add<MyResourceFilter>(int.MaxValue);
+            });
             services.AddTransient(typeof(RedisHelper.RedisHelper));
             services.AddTransient(typeof(StudentDal));
+            services.Configure<ConfigInfo>(Configuration.GetSection("configInfo"));
+            services.AddTransient<DemoAttributeFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

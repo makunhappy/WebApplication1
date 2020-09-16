@@ -10,6 +10,8 @@ using StackExchange.Redis;
 using Newtonsoft.Json;
 using DAL;
 using Models;
+using WebApplication1.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace WebApplication1.Controllers
 {
@@ -22,6 +24,7 @@ namespace WebApplication1.Controllers
         {
             this.StudentService = studentDal;
         }
+        [ServiceFilter(typeof(DemoAttributeFilter))]
         [HttpGet("{id=0}")]
         public IActionResult Index(int id)
         {
@@ -31,9 +34,20 @@ namespace WebApplication1.Controllers
             }
             var data = this.StudentService.QueryById(id);
             return Json(data);
-           
+
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            Console.WriteLine("HomeController.OnActionExecuting");
+            base.OnActionExecuting(context);
+        }
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            Console.WriteLine("HomeController.OnActionExecuted");
+            base.OnActionExecuted(context);
         }
     }
-    
-    
+
+
 }
