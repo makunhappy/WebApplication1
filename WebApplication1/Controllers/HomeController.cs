@@ -22,7 +22,7 @@ namespace WebApplication1.Controllers
         {
             this.StudentService = studentDal;
         }
-        [HttpGet]
+        [HttpGet("{id=0}")]
         public IActionResult Index(int id)
         {
             if (id == 0 || id < 0)
