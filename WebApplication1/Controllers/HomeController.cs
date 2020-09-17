@@ -26,6 +26,11 @@ namespace WebApplication1.Controllers
             this.StudentService = studentDal;
             this.SchoolService = schoolDal;
         }
+        /// <summary>
+        ///     get a student
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [ServiceFilter(typeof(DemoAttributeFilter))]
         [HttpGet("{id=0}")]
         public IActionResult Index(int id)
@@ -38,7 +43,11 @@ namespace WebApplication1.Controllers
             return Json(data);
 
         }
-
+        /// <summary>
+        ///     add a student 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddStudent(Student s)
         {
