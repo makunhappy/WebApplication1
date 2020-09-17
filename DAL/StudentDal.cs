@@ -27,7 +27,7 @@ namespace DAL
         public Student QueryById(int id)
         {
             var data = this.RedisHelper.Get<Student>(string.Format(studentKey, id));
-            if(data == null)
+            if (data == null)
             {
                 using (var conn = new MySqlConnection(this.connectionString))
                 {
@@ -36,11 +36,12 @@ namespace DAL
                         student.SchoolInfo = school;
                         return student;
                     }, new { Id = id });
-                    if(students.Count() > 0 )
+                    if (students.Count() > 0)
                     {
                         this.RedisHelper.Set(string.Format(studentKey, id), students.First());
                         return students.First();
-                    }else
+                    }
+                    else
                     {
                         return null;
                     }
@@ -50,7 +51,19 @@ namespace DAL
             {
                 return data;
             }
-            
+
+        }
+        public bool Add(Student s)
+        {
+            if (this.RedisHelper.Exist(string.Format(studentKey, s.Id)))
+            {
+                this.RedisHelper.Delete(string.Format(studentKey, s.Id));
+            }
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                var res = conn.Execute("insert into student(name,address,schoolid) values(@Name,@Address,@SchoolId) ", new { Name = s.Name, Address = s.Address, SchoolId = s.SchoolInfo.Id });
+                return res > 0;
+            }
         }
     }
 }

@@ -20,9 +20,11 @@ namespace WebApplication1.Controllers
     public class HomeController : Controller
     {
         private StudentDal StudentService;
-        public HomeController(StudentDal studentDal)
+        private SchoolDal SchoolService;
+        public HomeController(StudentDal studentDal, SchoolDal schoolDal)
         {
             this.StudentService = studentDal;
+            this.SchoolService = schoolDal;
         }
         [ServiceFilter(typeof(DemoAttributeFilter))]
         [HttpGet("{id=0}")]
@@ -34,6 +36,30 @@ namespace WebApplication1.Controllers
             }
             var data = this.StudentService.QueryById(id);
             return Json(data);
+
+        }
+
+        [HttpPost]
+        public IActionResult AddStudent(Student s)
+        {
+            if (s == null || s.SchoolInfo == null)
+                return BadRequest();
+            if(s.SchoolInfo.Id<1)
+            {
+                var school = SchoolService.QueryByName(s.SchoolInfo.Name);
+                if(school!= null)
+                {
+                    s.SchoolInfo.Id = school.Id;
+                }
+                else
+                {
+                    SchoolService.Add(s.SchoolInfo);
+                    var schoolAdd = SchoolService.QueryByName(s.SchoolInfo.Name);
+                    s.SchoolInfo.Id = schoolAdd.Id;
+                }
+            }
+            var res = this.StudentService.Add(s);
+            return Json(res);
 
         }
 

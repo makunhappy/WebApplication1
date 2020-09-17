@@ -36,8 +36,11 @@ namespace WebApplication1
             });
             services.AddTransient(typeof(RedisHelper.RedisHelper));
             services.AddTransient(typeof(StudentDal));
+            services.AddTransient(typeof(SchoolDal));
             services.Configure<ConfigInfo>(Configuration.GetSection("configInfo"));
             services.AddTransient<DemoAttributeFilter>();
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,7 +51,10 @@ namespace WebApplication1
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseSwagger();
+            app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

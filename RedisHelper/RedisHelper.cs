@@ -36,5 +36,19 @@ namespace RedisHelper
                 return con.GetDatabase().StringSet(key, data);
             }
         }
+        public bool Exist(string key)
+        {
+                using (var con = ConnectionMultiplexer.Connect(this.redisConf))
+                {
+                    return con.GetDatabase().KeyExists(key);
+                }
+        }
+        public bool Delete(string key)
+        {
+            using (var con = ConnectionMultiplexer.Connect(this.redisConf))
+            {
+                return con.GetDatabase().KeyDelete(key);
+            }
+        }
     }
 }
